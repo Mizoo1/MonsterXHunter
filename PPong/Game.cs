@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Monster.ECS;
 using SDL2;
 
 namespace Monster
@@ -12,10 +14,11 @@ namespace Monster
 		private bool isRunning;
 		private IntPtr window;
 		public IntPtr renderer;
-		private GameObject player;
-		private GameObject enemy;
 		private Map map;
-		public Game() {
+        private Manager manager;
+        private Entity Player;
+        private LoadContent lo;
+        public Game() {
 			
 		}
 		public void init(String title ,int xpos,int ypos,int width,int height, bool fullscreen)
@@ -45,11 +48,14 @@ namespace Monster
 			{
 				isRunning= false;
 			}
-		
-			player = new GameObject("Assest\\hero01.png", renderer,0,0);
-			enemy  = new GameObject("Assest\\enemy.png", renderer, 50,50);
-			map = new Map(renderer);
-		}
+
+            manager = new Manager();
+            Player = manager.AddEntity();
+            lo = new LoadContent(renderer);
+            map = new Map(renderer, lo);
+            Player.AddComponent<PositionComponent>();
+            Player.AddComponent<SpriteComponent>(lo.player, renderer);
+        }
 		public void handleEvent()
 		{
 			SDL.SDL_Event e;
@@ -66,19 +72,23 @@ namespace Monster
 		}
 		public void Update ()
 		{
-			player.Update();
-			enemy.Update();
-			
-		}
+            manager.Refresh();
+			manager.Update();
+            if (Player.GetComponent<PositionComponent>().x() > 100)
+			{
+
+                Player.GetComponent<SpriteComponent>().setTex(lo.enemy);
+            }
+
+        }
 		public void render () 
 		{
-			SDL.SDL_RenderClear(renderer);
-			map.DrawMap();
-			// add stuff to render
-			player.Render();
-			enemy.Render();
-		    SDL.SDL_RenderPresent(renderer);
-		}
+            SDL.SDL_RenderClear(renderer);
+            map.DrawMap();
+            manager.Draw();
+            // add stuff to render
+            SDL.SDL_RenderPresent(renderer);
+        }
 		public void clean () 
 		{
 			SDL.SDL_DestroyRenderer(renderer);

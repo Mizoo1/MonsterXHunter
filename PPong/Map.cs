@@ -15,18 +15,18 @@ namespace Monster
 		private IntPtr water;
 		private IntPtr dirt;
 		private int[,] map=new int[20,25];
-	public Map(IntPtr renderer) 
+	public Map(IntPtr renderer, LoadContent lo) 
 		{
-			this.renderer= renderer;
-			dirt = TextureManager.loadTexture("Assest\\dirt.png", renderer);
-			grass = TextureManager.loadTexture("Assest\\grass.png", renderer);
-			water = TextureManager.loadTexture("Assest\\water.png", renderer);
-			LoadMap(lvl1);
-			srcRect.x = srcRect.y=0;
-			srcRect.w= desRect.w=32;
-			srcRect.h = desRect.h = 32;
-			desRect.x= desRect.y=0;
-		}
+            this.renderer = renderer;
+            dirt = lo.dirt;
+            grass = lo.grass;
+            water = lo.water;
+            LoadMap(lvl1);
+            srcRect.x = srcRect.y = 0;
+            srcRect.w = desRect.w = 32;
+            srcRect.h = desRect.h = 32;
+            desRect.x = desRect.y = 0;
+        }
 		public void LoadMap(int[,] arr) 
 		{
 			for(int row=0; row < map.GetLength(0); row++)
