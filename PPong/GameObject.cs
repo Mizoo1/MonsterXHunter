@@ -15,11 +15,11 @@ namespace Monster
 		private IntPtr objTexture;
 		private IntPtr renderer;
 		SDL.SDL_Rect srcRect, desRect;
-		public GameObject(String texturesheet, IntPtr ren,int x,int y) 
+		public GameObject(IntPtr objTexture, IntPtr ren, int x, int y) 
 		{
 			renderer = ren;
-			objTexture = TextureManager.loadTexture(texturesheet,renderer);
-			xPos = x;
+            this.objTexture = objTexture;
+            xPos = x;
 			yPos = y;
 		}
 		public void Update() 

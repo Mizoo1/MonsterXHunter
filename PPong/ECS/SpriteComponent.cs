@@ -9,8 +9,8 @@ namespace Monster.ECS
 {
 	public  class SpriteComponent: Component
 	{
-		private PositionComponent position;
-		private IntPtr tex;
+        private TransformComponent transform;
+        private IntPtr tex;
 		private SDL.SDL_Rect srcRect, desRect;
 		private IntPtr renderer;
 
@@ -29,19 +29,25 @@ namespace Monster.ECS
 		}
 		public override void Init()
 		{
-			position= Entity.GetComponent<PositionComponent>();	
-			srcRect.x= srcRect.y= 0;
+            transform = Entity.GetComponent<TransformComponent>();
+            srcRect.x= srcRect.y= 0;
 			srcRect.w= srcRect.h= 32;
 			desRect.w= desRect.h= 64;
 		}
 		public override void Update()
 		{
-			desRect.x = position.x();
-			desRect.y = position.y();	
-		}
+            desRect.x = (int)(transform.position.x);
+            desRect.y = (int)(transform.position.y);
+            desRect.w = transform.width * transform.scale;
+            desRect.h = transform.height * transform.scale;
+        }
 		public override void Draw()
 		{
 			TextureManager.Draw(tex, srcRect, desRect, renderer);
 		}
-	}
+        public override void OnDestroy()
+        {
+            SDL.SDL_DestroyTexture(tex);
+        }
+    }
 }

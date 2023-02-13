@@ -23,7 +23,8 @@ namespace Monster.ECS
 		public virtual void Update() { }
 
 		public virtual void Draw() { }
-	}
+        public virtual void OnDestroy() { }
+    }
 
 	public class Entity
 	{

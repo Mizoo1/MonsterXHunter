@@ -17,7 +17,10 @@ namespace Monster
 		private Map map;
         private Manager manager;
         private Entity Player;
+        private Entity wall;
+        private Entity tile0, tile1, tile2;
         private LoadContent lo;
+        private List<ColliderComponent> colliders;
         public Game() {
 			
 		}
@@ -49,42 +52,54 @@ namespace Monster
 				isRunning= false;
 			}
 
+            colliders = new List<ColliderComponent>();
             manager = new Manager();
-            Player = manager.AddEntity();
             lo = new LoadContent(renderer);
             map = new Map(renderer, lo);
-            Player.AddComponent<PositionComponent>();
+            // Entity
+            Player = manager.AddEntity();
+            wall = manager.AddEntity();
+            tile0 = manager.AddEntity();
+            tile1 = manager.AddEntity();
+            tile2 = manager.AddEntity();
+            // Tile Component
+            tile0.AddComponent<TileComponent>(200, 200, 32, 32, 0, renderer);
+            tile1.AddComponent<TileComponent>(250, 250, 32, 32, 1, renderer);
+            tile1.AddComponent<ColliderComponent>("dirt", colliders);
+            tile2.AddComponent<TileComponent>(150, 150, 32, 32, 2, renderer);
+            tile2.AddComponent<ColliderComponent>("grass", colliders);
+            // player Component
+            Player.AddComponent<TransformComponent>(2);
             Player.AddComponent<SpriteComponent>(lo.player, renderer);
+            Player.AddComponent<KeyboardController>();
+            Player.AddComponent<ColliderComponent>("Player", colliders);
+            //wall Component
+            wall.AddComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+            wall.AddComponent<SpriteComponent>(lo.dirt, renderer);
+            wall.AddComponent<ColliderComponent>("Wall", colliders);
         }
 		public void handleEvent()
 		{
-			SDL.SDL_Event e;
-			SDL.SDL_PollEvent(out e);
-			switch (e.type)
-			{
-				case SDL.SDL_EventType.SDL_QUIT:
-					isRunning= false;
-					break;
-				default:
-					break;
 
-			}
 		}
 		public void Update ()
 		{
+            Collision c = new Collision();
             manager.Refresh();
-			manager.Update();
-            if (Player.GetComponent<PositionComponent>().x() > 100)
-			{
-
-                Player.GetComponent<SpriteComponent>().setTex(lo.enemy);
+            manager.Update();
+            foreach (var v in colliders)
+            {
+                if (c.AABB(Player.GetComponent<ColliderComponent>(), v))
+                {
+                    Player.GetComponent<TransformComponent>().position = new Vector2D(0, 0);
+                }
             }
 
         }
 		public void render () 
 		{
             SDL.SDL_RenderClear(renderer);
-            map.DrawMap();
+            //map.DrawMap();
             manager.Draw();
             // add stuff to render
             SDL.SDL_RenderPresent(renderer);
@@ -96,7 +111,7 @@ namespace Monster
 			SDL.SDL_Quit();
 			Console.WriteLine("Game cleaned");
 		}
-		public bool running() { return isRunning; }
+		public bool running() { return Player.GetComponent<KeyboardController>().isRunning; }
 
 
 	}
