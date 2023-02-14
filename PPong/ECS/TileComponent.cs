@@ -9,46 +9,40 @@ namespace Monster.ECS
 {
 	public class TileComponent:Component
 	{
-		private TransformComponent transform;
-		private SpriteComponent sprite;
-		private SDL.SDL_Rect tileRect;
-		private int titledID;
-		private LoadContent lo;
+        public IntPtr tex;
+        public SDL.SDL_Rect srcRect, desRect;
+        public Vector2D position;
+        private LoadContent lo;
 		private IntPtr renderer;
-		private IntPtr path;
 		public TileComponent()
 		{
 
 		}
-		public TileComponent(int x, int y,int w ,int h ,int id, IntPtr renderer)
+		public TileComponent(int srcX, int srcY, int x, int y, String path, IntPtr renderer)
 		{
-			lo = new LoadContent(renderer);
-			this.renderer = renderer;
-			this.tileRect.x= x;
-			this.tileRect.y= y;
-			this.tileRect.w= w;
-			this.tileRect.h= h;
-			this.titledID = id;
-			switch (titledID)
-			{
-				case 0:
-					path =lo.water ;
-					break;
-				case 1:
-					path =lo.dirt;
-					break;
-				case 2:
-					path =lo.grass;
-					break;
-				default: break;
-			}
-		}
+            lo = new LoadContent(renderer);
+            this.renderer = renderer;
+            tex = TextureManager.loadTexture(path, renderer);
+            position = new Vector2D(x, y);
+
+            srcRect.x = srcX; srcRect.y = srcY;
+            srcRect.w = srcRect.h = 32;
+
+            desRect.x = x; desRect.y = y;
+            desRect.h = desRect.w = 75;
+        }
 		public override void Init()
 		{
-			Entity.AddComponent<TransformComponent>((float)tileRect.x, (float)tileRect.y, tileRect.w, tileRect.h, 1);
-			transform=Entity.GetComponent<TransformComponent>();
-			Entity.AddComponent<SpriteComponent>(path, renderer);
-			sprite=Entity.GetComponent<SpriteComponent>();
+			
 		}
-	}
+        public override void Draw()
+        {
+            TextureManager.Draw(tex, srcRect, desRect, renderer, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+        }
+        public override void Update()
+        {
+            desRect.x = (int)position.x - Game.camera.x;
+            desRect.y = (int)position.y - Game.camera.y;
+        }
+    }
 }

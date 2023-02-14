@@ -9,92 +9,32 @@ namespace Monster
 {
 	public class Map
 	{
-		private SDL.SDL_Rect srcRect, desRect;
-		private IntPtr renderer;
-		private IntPtr grass;
-		private IntPtr water;
-		private IntPtr dirt;
-		private int[,] map=new int[20,25];
+
 	public Map(IntPtr renderer, LoadContent lo) 
 		{
-            this.renderer = renderer;
-            dirt = lo.dirt;
-            grass = lo.grass;
-            water = lo.water;
-            LoadMap(lvl1);
-            srcRect.x = srcRect.y = 0;
-            srcRect.w = desRect.w = 32;
-            srcRect.h = desRect.h = 32;
-            desRect.x = desRect.y = 0;
+           
         }
-		public void LoadMap(int[,] arr) 
+		public void LoadMap(string path, int sizeX, int sizeY) 
 		{
-			for(int row=0; row < map.GetLength(0); row++)
-			{
-				for (int colom = 0; colom < map.GetLength(1); colom++)
-				{
-					map[row,colom] = arr[row,colom];
-				}
-			}
-		}
-		public void DrawMap()
-		{
-			int type = 0;
-
-			for (int row = 0; row < map.GetLength(0); row++)
-			{
-				for (int colom = 0; colom < map.GetLength(1); colom++)
-				{
-					type = map[row,colom];
-					desRect.x = colom * 32;
-					desRect.y = row * 32;
-					switch (type)
-					{
-						case 0:
-							TextureManager.Draw(water, srcRect, desRect, renderer);
-							break;
-						case 1:
-							TextureManager.Draw(grass, srcRect, desRect, renderer);
-							break;
-						case 2:
-							TextureManager.Draw(dirt, srcRect, desRect, renderer);
-							break;
-						default: 
-							break;
-
-					}
-				}
-			}
-		}
-		public int[,] lvl1 =
-		{
-			{ 0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,1,1,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-		};
-        public void OnDestroy()
-        {
-            SDL.SDL_DestroyTexture(grass);
-            SDL.SDL_DestroyTexture(water);
-            SDL.SDL_DestroyTexture(dirt);
+            using (var mapFile = new StreamReader(path))
+            {
+                string line;
+                int y = 0;
+                while ((line = mapFile.ReadLine()) != null && y < sizeY)
+                {
+                    for (int x = 0; x < sizeX && x * 2 < line.Length; x++)
+                    {
+                        if (int.TryParse(line.Substring(x * 2, 1), out int srcY) &&
+                            int.TryParse(line.Substring(x * 2 + 1, 1), out int srcX))
+                        {
+                            Game.AddTile(srcX * 32, srcY * 32, x * 24, y * 24);
+                        }
+                    }
+                    y++;
+                }
+            }
         }
+	
 
     }
 }

@@ -13,7 +13,8 @@ namespace Monster
 		public IntPtr grass;
 		public IntPtr water;
 		public IntPtr player;
-		public IntPtr enemy;
+        public IntPtr player_idle;
+        public IntPtr enemy;
 		
 		public LoadContent(IntPtr renderer)
 		{
@@ -22,7 +23,8 @@ namespace Monster
 			grass  = TextureManager.loadTexture("Assest\\grass.png",renderer);
 			water  = TextureManager.loadTexture("Assest\\water.png",renderer);
 			player = TextureManager.loadTexture("Assest\\hero01.png",renderer);
-			enemy  = TextureManager.loadTexture("Assest\\enemy.png",renderer);
+            player_idle = TextureManager.loadTexture("Assest\\player_anims.png", renderer);
+            enemy  = TextureManager.loadTexture("Assest\\enemy.png",renderer);
 		}
 		
 	}

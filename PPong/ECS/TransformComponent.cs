@@ -14,7 +14,7 @@ namespace Monster.ECS
 		public int speed  =3;
 		public int height =32;
 		public int width  =32;
-		public int scale  =1;
+		public int scale  =3;
 		public TransformComponent(float x, float y)
 		{
 			position= new Vector2D(x,y);
@@ -27,9 +27,9 @@ namespace Monster.ECS
 		}
 		public TransformComponent(int sc)
 		{
-			position = new Vector2D(0f, 0f);
-			velocity = new Vector2D(0f, 0f);
-			speed = sc;
+            position = new Vector2D(400, 320);
+            velocity = new Vector2D(0f, 0f);
+            speed = sc;
 		}
 		public TransformComponent(float x, float y,int h,int w,int sc)
 		{

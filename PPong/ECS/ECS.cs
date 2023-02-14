@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using static Monster.Game;
 
 namespace Monster.ECS
 {
@@ -28,11 +29,18 @@ namespace Monster.ECS
 
 	public class Entity
 	{
-		private bool active = true;
+        private Manager manager;
+        private bool Active = true;
 		private List<Component> components= new List<Component>();
-		private Dictionary<Type, Component> componentDictionary= new Dictionary<Type, Component>();
+        private Dictionary<Type, Component> componentArray = new Dictionary<Type, Component>();
+        private Dictionary<Type, bool> componentBitSet = new Dictionary<Type, bool>();
+        private Dictionary<GroupLabels, bool> groupBitSet = new Dictionary<GroupLabels, bool>();
+        public Entity(Manager mManager)
+        {
+            manager = mManager;
+        }
 
-		public void Update()
+        public void Update()
 		{
 			foreach (var c in components)
 			{
@@ -51,82 +59,110 @@ namespace Monster.ECS
 
 		public bool IsActive()
 		{
-			return active;
+			return Active;
 		}
 
 		public void Destroy()
 		{
-			active = false;
+			Active = false;
 		}
+        public bool HasGroup(GroupLabels mGroup)
+        {
+            return groupBitSet.ContainsKey(mGroup) && groupBitSet[mGroup];
+        }
+        public void AddGroup(GroupLabels mGroup)
+        {
 
-		public bool HasComponent<T>() where T : Component
+            groupBitSet[mGroup] = true;
+            manager.AddToGroup(this, mGroup);
+        }
+        public void DelGroup(GroupLabels mGroup)
+        {
+            if (groupBitSet.ContainsKey(mGroup))
+                groupBitSet.Remove(mGroup);
+        }
+        public bool HasComponent<T>() where T : Component
 		{
-			return componentDictionary.ContainsKey(typeof(T));
-		}
+            Type type = typeof(T);
+            return componentBitSet.ContainsKey(type) && componentBitSet[type];
+        }
 
 		public T AddComponent<T>(params object[] args) where T : Component, new()
 		{
-			T component = (T)Activator.CreateInstance(typeof(T), args);
-			component.Entity = this;
-			components.Add(component);
-			componentDictionary[typeof(T)] = component;
-			component.Init();
+            Type type = typeof(T);
+            T component = (T)Activator.CreateInstance(type, args);
+            component.Entity = this;
+            components.Add(component);
+            componentArray[type] = component;
+            componentBitSet[type] = true;
+            component.Init();
 			return component;
 		}
 
 		public T GetComponent<T>() where T : Component
 		{
-			Console.WriteLine("Keys in componentDictionary:");
-			foreach (var key in componentDictionary.Keys)
-			{
-				Console.WriteLine(key.Name);
-			}
-			if (!componentDictionary.ContainsKey(typeof(T)))
-			{
-				throw new KeyNotFoundException("The specified component type is not present in the entity.");
-			}
-			Component component = componentDictionary[typeof(T)];
-			Console.WriteLine("Returned component: " + component.ToString());
-			if (!(component is T))
-			{
-				throw new InvalidCastException("The retrieved component is not of the expected type.");
-			}
-			return (T)component;
-		}
+            Type type = typeof(T);
+            return (T)componentArray[type];
+        }
 	}
 
 	public class Manager
 	{
-		private List<Entity> entities= new List<Entity>();
+        private List<Entity> entities = new List<Entity>();
+        private Dictionary<GroupLabels, List<Entity>> groupedEntities = new Dictionary<GroupLabels, List<Entity>>();
 
-		public void Update()
-		{
-			foreach (var e in entities)
-			{
-				e.Update();
-			}
-		}
+        public void Update()
+        {
+            foreach (var e in entities)
+                e.Update();
+        }
+        public void Draw()
+        {
+            foreach (var e in entities)
+                e.Draw();
+        }
+        public void Refresh()
+        {
+            var groupTypes = groupedEntities.Keys;
+            foreach (var group in groupTypes)
+            {
+                var entitiesInGroup = groupedEntities[group];
+                entitiesInGroup.RemoveAll(e => !e.IsActive() || !e.HasGroup(group));
+            }
 
-		public void Draw()
-		{
-			foreach (var e in entities)
-			{
-				e.Draw();
-			}
-		}
+            entities.RemoveAll(e => !e.IsActive());
+        }
+        public void AddToGroup(Entity mEntity, GroupLabels mGroup)
+        {
+            if (groupedEntities.ContainsKey(mGroup))
+            {
+                groupedEntities[mGroup].Add(mEntity);
+            }
+            else
+            {
+                groupedEntities.Add(mGroup, new List<Entity> { mEntity });
+            }
+        }
 
-		public void Refresh()
-		{
-			entities.RemoveAll(e => !e.IsActive());
-		}
+        public List<Entity> GetGroup(GroupLabels mGroup)
+        {
+            if (groupedEntities.ContainsKey(mGroup))
+            {
+                return groupedEntities[mGroup];
+            }
+            else
+            {
+                return new List<Entity>();
+            }
+        }
 
-		public Entity AddEntity()
-		{
-			Entity entity = new Entity();
-			entities.Add(entity);
-			return entity;
-		}
-	}
+        public Entity AddEntity()
+        {
+            Entity e = new Entity(this);
+            entities.Add(e);
+            return e;
+        }
+    }
 
 }
 

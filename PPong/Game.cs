@@ -11,27 +11,38 @@ namespace Monster
 {
 	public class Game
 	{
-		private bool isRunning;
+        public static SDL.SDL_Rect camera;
+        public static bool isRunning;
 		private IntPtr window;
-		public IntPtr renderer;
+		public static IntPtr renderer;
 		private Map map;
-        private Manager manager;
+        private static Manager manager;
         private Entity Player;
-        private Entity wall;
-        private Entity tile0, tile1, tile2;
         private LoadContent lo;
         private List<ColliderComponent> colliders;
+        public enum GroupLabels : int
+        {
+            groupMap,
+            groupPlayers,
+            groupEnemies,
+            groupColliders
+        }
+        private List<Entity> players;
+        private List<Entity> tiles;
+        private List<Entity> enemies;
         public Game() {
 			
 		}
 		public void init(String title ,int xpos,int ypos,int width,int height, bool fullscreen)
 		{
-			/*var flags= SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN;
+            camera.x = camera.y = 0;
+            camera.w = 800; camera.h = 640;
+            /*var flags= SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN;
 			if (fullscreen)
 			{
 				flags = SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN;// fullscrean
 			}*/
-			if (SDL.SDL_Init(SDL.SDL_INIT_EVERYTHING) == 0)
+            if (SDL.SDL_Init(SDL.SDL_INIT_EVERYTHING) == 0)
 			{
 				Console.WriteLine("Subsystem Inititalised");
 				window = SDL.SDL_CreateWindow(title, xpos,ypos,width,height, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
@@ -56,27 +67,19 @@ namespace Monster
             manager = new Manager();
             lo = new LoadContent(renderer);
             map = new Map(renderer, lo);
+            map.LoadMap("Assest\\map01.txt", 50, 50);
             // Entity
             Player = manager.AddEntity();
-            wall = manager.AddEntity();
-            tile0 = manager.AddEntity();
-            tile1 = manager.AddEntity();
-            tile2 = manager.AddEntity();
-            // Tile Component
-            tile0.AddComponent<TileComponent>(200, 200, 32, 32, 0, renderer);
-            tile1.AddComponent<TileComponent>(250, 250, 32, 32, 1, renderer);
-            tile1.AddComponent<ColliderComponent>("dirt", colliders);
-            tile2.AddComponent<TileComponent>(150, 150, 32, 32, 2, renderer);
-            tile2.AddComponent<ColliderComponent>("grass", colliders);
             // player Component
             Player.AddComponent<TransformComponent>(2);
-            Player.AddComponent<SpriteComponent>(lo.player, renderer);
+            Player.AddComponent<SpriteComponent>(lo.player_idle, renderer, true);
             Player.AddComponent<KeyboardController>();
             Player.AddComponent<ColliderComponent>("Player", colliders);
-            //wall Component
-            wall.AddComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
-            wall.AddComponent<SpriteComponent>(lo.dirt, renderer);
-            wall.AddComponent<ColliderComponent>("Wall", colliders);
+            Player.AddGroup(GroupLabels.groupPlayers);
+            // Entity List 
+            players = manager.GetGroup(GroupLabels.groupPlayers);
+            tiles = manager.GetGroup(GroupLabels.groupMap);
+            enemies = manager.GetGroup(GroupLabels.groupEnemies);
         }
 		public void handleEvent()
 		{
@@ -87,21 +90,34 @@ namespace Monster
             Collision c = new Collision();
             manager.Refresh();
             manager.Update();
-            foreach (var v in colliders)
-            {
-                if (c.AABB(Player.GetComponent<ColliderComponent>(), v))
-                {
-                    Player.GetComponent<TransformComponent>().position = new Vector2D(0, 0);
-                }
-            }
+            camera.x = (int)Player.GetComponent<TransformComponent>().position.x - 400;
+            camera.y = (int)Player.GetComponent<TransformComponent>().position.y - 320;
+            if (camera.x < 0)
+                camera.x = 0;
+            if (camera.y < 0)
+                camera.y = 0;
+            if (camera.x > camera.w)
+                camera.x = camera.w;
+            if (camera.y > camera.h)
+                camera.y = camera.h;
+        }
+        public static void AddTile(int srcX, int srcY, int x, int y)
+        {
+            String s = "Assest\\terrain_ss.png";
+            Entity tile0 = manager.AddEntity();
+            tile0.AddComponent<TileComponent>(srcX, srcY, x, y, s, renderer);
+            tile0.AddGroup(GroupLabels.groupMap);
 
         }
-		public void render () 
+        public void render () 
 		{
             SDL.SDL_RenderClear(renderer);
-            //map.DrawMap();
-            manager.Draw();
-            // add stuff to render
+            foreach (var t in tiles)
+                t.Draw();
+            foreach (var p in players)
+                p.Draw();
+            foreach (var e in enemies)
+                e.Draw();
             SDL.SDL_RenderPresent(renderer);
         }
 		public void clean () 
@@ -111,7 +127,7 @@ namespace Monster
 			SDL.SDL_Quit();
 			Console.WriteLine("Game cleaned");
 		}
-		public bool running() { return Player.GetComponent<KeyboardController>().isRunning; }
+		public bool running() { return isRunning; }
 
 
 	}
