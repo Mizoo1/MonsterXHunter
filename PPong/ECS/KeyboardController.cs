@@ -50,6 +50,14 @@ namespace Monster.ECS
                         transform.velocity.x = 1;
                         sprite.Play("Walk");
                         break;
+                    case SDL.SDL_Keycode.SDLK_q:
+                        Game.isRunning = false;
+                        Environment.Exit(0);
+                        break;
+                    case SDL.SDL_Keycode.SDLK_p:
+
+
+                        break;
 
                     default: break;
                 }
