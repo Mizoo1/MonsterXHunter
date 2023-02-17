@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Monster;
 using SDL2;
 
 namespace MenuMonster.Menu
@@ -13,9 +14,12 @@ namespace MenuMonster.Menu
         private static readonly double LOGIC_RATE = 0.01;
         public static IntPtr fontPointer;
         public static long then;
+        private MusicApp music;
 
         public MenuManager()
         {
+            music = new MusicApp("Assest\\Hintergrund_1.mp3");
+            music.playMusik();
             AppInitializer.InitializeApp();
             Menu.app.Logic = InputHandler.Logic;
             Menu.app.Draw = SceneRenderer.Draw;

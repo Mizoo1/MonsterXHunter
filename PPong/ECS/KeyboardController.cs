@@ -27,7 +27,11 @@ namespace Monster.ECS
 		{
 			SDL.SDL_PollEvent(out e);
 			if(e.type==SDL.SDL_EventType.SDL_QUIT)
+            {
                 Game.isRunning = false;
+                Environment.Exit(0);
+            }
+               
             if (e.type == SDL.SDL_EventType.SDL_KEYDOWN)
             {
 

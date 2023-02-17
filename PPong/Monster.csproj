@@ -90,6 +90,9 @@
     <None Update="Assest\Hero_Sheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Assest\Hintergrund_1.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assest\hole.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
