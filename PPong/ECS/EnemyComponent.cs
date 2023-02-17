@@ -52,6 +52,7 @@ namespace Monster.ECS
                     sprite.Play("Idle");
                 }
 
+
             }
 
         }

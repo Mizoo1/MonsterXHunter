@@ -49,20 +49,20 @@ namespace MenuMonster.Menu
             app.ActiveWidget = widgetTail;
 
             // Zeichnen Sie den Submenu
-            var w = CreateWidget("submenu1");
+            var w = CreateWidget("sound");
             w.X = 100;
             w.Y = 200;
-            w.Label = "Submenu Option 1";
+            w.Label = "Sound";
 
-            w = CreateWidget("submenu2");
+            w = CreateWidget("level");
             w.X = 100;
             w.Y = 250;
-            w.Label = "Submenu Option 2";
+            w.Label = "Level";
 
-            w = CreateWidget("submenu3");
+            w = CreateWidget("info");
             w.X = 100;
             w.Y = 300;
-            w.Label = "Submenu Option 3";
+            w.Label = "Info";
 
             w = CreateWidget("back");
             w.X = 100;
@@ -75,17 +75,17 @@ namespace MenuMonster.Menu
         {
             widgetTail = widgetHead;
             app.ActiveWidget = widgetTail;
-            var w = CreateWidget("subsubmenu1");
+            var w = CreateWidget("sound On");
             w.X = 100;
             w.Y = 200;
-            w.Label = "Subsubmenu Option 1";
+            w.Label = "Sound On";
 
-            w = CreateWidget("subsubmenu2");
+            w = CreateWidget("sound off");
             w.X = 100;
             w.Y = 250;
-            w.Label = "Subsubmenu Option 2";
+            w.Label = "Sound Off";
 
-            w = CreateWidget("subsubmenu3");
+            w = CreateWidget("back");
             w.X = 100;
             w.Y = 300;
             w.Label = "Back";

@@ -72,8 +72,9 @@ namespace Monster
             manager = new Manager();
             lo = new LoadContent(App.Renderer);
             map = new Map(App.Renderer, lo);
-            map.LoadMap("Assest\\map01.txt", 70, 70);
+            map.LoadMap("Assest\\map01.txt", 100, 100);
             // Entity
+
             Player = manager.AddEntity();
             // player Component
             Player.AddComponent<TransformComponent>(2, 50, 300);
@@ -154,6 +155,27 @@ namespace Monster
                 camera.x = camera.w;
             if (camera.y > camera.h)
                 camera.y = camera.h;
+            // Überprüfen Sie, ob die x-Position des Spielers innerhalb des erlaubten Bereichs liegt
+            if (Player.GetComponent<TransformComponent>().position.x < -30)
+            {
+                Player.GetComponent<TransformComponent>().position.x = -30;
+            }
+            else if (Player.GetComponent<TransformComponent>().position.x > 1536)
+            {
+                Player.GetComponent<TransformComponent>().position.x = 1536;
+            }
+
+            // Überprüfen Sie, ob die y-Position des Spielers innerhalb des erlaubten Bereichs liegt
+            if (Player.GetComponent<TransformComponent>().position.y < -26)
+            {
+                Player.GetComponent<TransformComponent>().position.y = -26;
+            }
+            else if (Player.GetComponent<TransformComponent>().position.y > 1142)
+            {
+                Player.GetComponent<TransformComponent>().position.y = 1142;
+            }
+
+            Console.WriteLine("Player position: (" + (int)Player.GetComponent<TransformComponent>().position.x + ", " + (int)Player.GetComponent<TransformComponent>().position.y + ")");
 
 
 
@@ -188,4 +210,5 @@ namespace Monster
         }
         public bool running() { return isRunning; }
     }
+
 }

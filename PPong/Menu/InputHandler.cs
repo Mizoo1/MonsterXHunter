@@ -95,7 +95,7 @@ namespace MenuMonster.Menu
                 Menu.InitWidgets();
                 Menu.InitDemo();
             }
-            if (App.Keyboard[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] && Menu.app.ActiveWidget.Label == "Submenu Option 1")
+            if (App.Keyboard[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] && Menu.app.ActiveWidget.Label == "Sound")
             {
                 App.Keyboard[(int)SDL.SDL_Scancode.SDL_SCANCODE_RETURN] = false;
                 Menu.DrawSubsubMenu();
