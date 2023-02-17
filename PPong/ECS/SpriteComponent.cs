@@ -8,43 +8,44 @@ using static SDL2.SDL;
 
 namespace Monster.ECS
 {
-	public  class SpriteComponent: Component
-	{
+    public class SpriteComponent : Component
+    {
+        public Dictionary<string, Animation> animations = new Dictionary<string, Animation>();
         private TransformComponent transform;
         private IntPtr tex;
-		private SDL.SDL_Rect srcRect, desRect;
-		private IntPtr renderer;
-        public Dictionary<string, Animation> animations = new Dictionary<string, Animation>();
+        private SDL.SDL_Rect srcRect, desRect;
         public SDL_RendererFlip flip = SDL_RendererFlip.SDL_FLIP_NONE;
+        private IntPtr renderer;
         private bool animated = false;
         private int frames = 0;
         private int speed = 100;
         public int animIdex = 0;
 
         public SpriteComponent()
-		{
-			
-		}
-		public SpriteComponent(IntPtr src, IntPtr renderer)
-		{
-			this.renderer = renderer;
-			setTex(src);
-		}
+        {
+
+        }
+        public SpriteComponent(IntPtr src, IntPtr renderer)
+        {
+            this.renderer = renderer;
+            setTex(src);
+        }
         public SpriteComponent(IntPtr src, IntPtr renderer, bool isAnimated)
         {
             this.renderer = renderer;
             animated = true;
             Animation idle = new Animation(0, 3, 100);
             Animation walk = new Animation(1, 8, 100);
-            Animation shoot = new Animation(2, 8, 100);
+            Animation shoot = new Animation(2, 3, 100);
             animations.Add("Idle", idle);
             animations.Add("Walk", walk);
             animations.Add("Shoot", shoot);
+
             Play("Idle");
             setTex(src);
         }
         public void setTex(IntPtr src)
-		{
+        {
             tex = src;
         }
         public void Play(String animName)
@@ -54,14 +55,14 @@ namespace Monster.ECS
             speed = animations[animName].speed;
         }
         public override void Init()
-		{
+        {
             transform = Entity.GetComponent<TransformComponent>();
-            srcRect.x= srcRect.y= 0;
+            srcRect.x = srcRect.y = 0;
             srcRect.w = transform.width;
             srcRect.h = transform.height;
         }
-		public override void Update()
-		{
+        public override void Update()
+        {
             if (animated)
             {
                 srcRect.x = srcRect.w * (int)((SDL.SDL_GetTicks() / speed) % frames);
@@ -72,10 +73,10 @@ namespace Monster.ECS
             desRect.w = transform.width * transform.scale;
             desRect.h = transform.height * transform.scale;
         }
-		public override void Draw()
-		{
-			TextureManager.Draw(tex, srcRect, desRect, renderer, flip);
-		}
+        public override void Draw()
+        {
+            TextureManager.Draw(tex, srcRect, desRect, renderer, flip);
+        }
         public override void OnDestroy()
         {
             SDL.SDL_DestroyTexture(tex);

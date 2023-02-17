@@ -21,18 +21,20 @@ namespace Monster
         private Map map;
         private static Manager manager;
         private Entity Player;
-        private LoadContent lo;
+        public static LoadContent lo;
         private List<ColliderComponent> colliders;
         public enum GroupLabels : int
         {
             groupMap,
             groupPlayers,
             groupEnemies,
-            groupColliders
+            groupColliders,
+            groupShoots
         }
         private List<Entity> players;
         private List<Entity> tiles;
         private List<Entity> enemies;
+        private List<Entity> Shoots;
         public Game()
         {
 
@@ -70,7 +72,7 @@ namespace Monster
             manager = new Manager();
             lo = new LoadContent(App.Renderer);
             map = new Map(App.Renderer, lo);
-            map.LoadMap("Assest\\map01.txt", 50, 50);
+            map.LoadMap("Assest\\map01.txt", 70, 70);
             // Entity
             Player = manager.AddEntity();
             // player Component
@@ -81,15 +83,43 @@ namespace Monster
             Player.AddGroup(GroupLabels.groupPlayers);
             // Enemy Component 
             Entity enemy = manager.AddEntity();
-            enemy.AddComponent<TransformComponent>(2, 100, 300);
+            enemy.AddComponent<TransformComponent>(2, 500, 200);
             enemy.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
-            enemy.AddComponent<EnemyComponent>(enemy.GetComponent<TransformComponent>(), Player.GetComponent<TransformComponent>());
+            enemy.AddComponent<EnemyComponent>(enemy.GetComponent<TransformComponent>(), Player);
             enemy.AddGroup(GroupLabels.groupEnemies);
-            // Entity List 
+
+            Entity enemy1 = manager.AddEntity();
+            enemy1.AddComponent<TransformComponent>(2, 450, 50);
+            enemy1.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy1.AddComponent<EnemyComponent>(enemy1.GetComponent<TransformComponent>(), Player);
+            enemy1.AddGroup(GroupLabels.groupEnemies);
+
+            Entity enemy2 = manager.AddEntity();
+            enemy2.AddComponent<TransformComponent>(2, 700, 30);
+            enemy2.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy2.AddComponent<EnemyComponent>(enemy2.GetComponent<TransformComponent>(), Player);
+            enemy2.AddGroup(GroupLabels.groupEnemies);
+
+            Entity enemy3 = manager.AddEntity();
+            enemy3.AddComponent<TransformComponent>(2, 700, 500);
+            enemy3.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy3.AddComponent<EnemyComponent>(enemy3.GetComponent<TransformComponent>(), Player);
+            enemy3.AddGroup(GroupLabels.groupEnemies);
+
+            Entity enemy4 = manager.AddEntity();
+            enemy4.AddComponent<TransformComponent>(2, 700, 1000);
+            enemy4.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy4.AddComponent<EnemyComponent>(enemy4.GetComponent<TransformComponent>(), Player);
+            enemy4.AddGroup(GroupLabels.groupEnemies);
+
+            //Entity List 
             players = manager.GetGroup(GroupLabels.groupPlayers);
             tiles = manager.GetGroup(GroupLabels.groupMap);
             enemies = manager.GetGroup(GroupLabels.groupEnemies);
+            Shoots = manager.GetGroup(GroupLabels.groupShoots);
+
         }
+
         public void handleEvent()
         {
             if (App.Keyboard[(int)SDL.SDL_Scancode.SDL_SCANCODE_F])
@@ -145,6 +175,8 @@ namespace Monster
                 p.Draw();
             foreach (var e in enemies)
                 e.Draw();
+            foreach (var s in Shoots)
+                s.Draw();
             SDL.SDL_RenderPresent(App.Renderer);
         }
         public void clean()

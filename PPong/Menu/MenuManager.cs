@@ -8,7 +8,7 @@ using SDL2;
 
 namespace MenuMonster.Menu
 {
-    
+
     public class MenuManager
     {
         private static readonly double LOGIC_RATE = 0.01;
