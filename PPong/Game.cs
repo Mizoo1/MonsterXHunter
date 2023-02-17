@@ -74,11 +74,17 @@ namespace Monster
             // Entity
             Player = manager.AddEntity();
             // player Component
-            Player.AddComponent<TransformComponent>(2);
+            Player.AddComponent<TransformComponent>(2, 50, 300);
             Player.AddComponent<SpriteComponent>(lo.player_idle, App.Renderer, true);
             Player.AddComponent<KeyboardController>();
             Player.AddComponent<ColliderComponent>("Player", colliders);
             Player.AddGroup(GroupLabels.groupPlayers);
+            // Enemy Component 
+            Entity enemy = manager.AddEntity();
+            enemy.AddComponent<TransformComponent>(2, 100, 300);
+            enemy.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy.AddComponent<EnemyComponent>(enemy.GetComponent<TransformComponent>(), Player.GetComponent<TransformComponent>());
+            enemy.AddGroup(GroupLabels.groupEnemies);
             // Entity List 
             players = manager.GetGroup(GroupLabels.groupPlayers);
             tiles = manager.GetGroup(GroupLabels.groupMap);

@@ -451,3 +451,4 @@ D:\Muaaz\Studim\Semester 3\c#\Github\MonsterXHunter\PPong\bin\Debug\net6.0\Asses
 D:\Muaaz\Studim\Semester 3\c#\Github\MonsterXHunter\PPong\bin\Debug\net6.0\Assest\terrain_ss.png
 D:\Muaaz\Studim\Semester 3\c#\Github\MonsterXHunter\PPong\bin\Debug\net6.0\Assest\Monster_.jpg
 D:\Muaaz\Studim\Semester 3\c#\Github\MonsterXHunter\PPong\bin\Debug\net6.0\Font\Lato-Regular.ttf
+D:\Muaaz\Studim\Semester 3\c#\Github\MonsterXHunter\PPong\bin\Debug\net6.0\Assest\enemy_shoot.png

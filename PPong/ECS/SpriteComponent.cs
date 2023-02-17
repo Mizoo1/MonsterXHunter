@@ -36,8 +36,10 @@ namespace Monster.ECS
             animated = true;
             Animation idle = new Animation(0, 3, 100);
             Animation walk = new Animation(1, 8, 100);
+            Animation shoot = new Animation(2, 8, 100);
             animations.Add("Idle", idle);
             animations.Add("Walk", walk);
+            animations.Add("Shoot", shoot);
             Play("Idle");
             setTex(src);
         }

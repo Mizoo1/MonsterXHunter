@@ -24,8 +24,8 @@ namespace Monster
 			water  = TextureManager.loadTexture("Assest\\water.png",renderer);
 			player = TextureManager.loadTexture("Assest\\hero01.png",renderer);
             player_idle = TextureManager.loadTexture("Assest\\player_anims.png", renderer);
-            enemy  = TextureManager.loadTexture("Assest\\enemy.png",renderer);
-		}
+            enemy = TextureManager.loadTexture("Assest\\enemy_shoot.png", renderer);
+        }
 		
 	}
 }
