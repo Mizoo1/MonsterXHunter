@@ -113,6 +113,12 @@ namespace Monster
             enemy4.AddComponent<EnemyComponent>(enemy4.GetComponent<TransformComponent>(), Player);
             enemy4.AddGroup(GroupLabels.groupEnemies);
 
+            Entity enemy5 = manager.AddEntity();
+            enemy5.AddComponent<TransformComponent>(2, 700, 700);
+            enemy5.AddComponent<SpriteComponent>(lo.enemy, App.Renderer, true);
+            enemy5.AddComponent<EnemyComponent>(enemy5.GetComponent<TransformComponent>(), Player);
+            enemy5.AddGroup(GroupLabels.groupEnemies);
+
             //Entity List 
             players = manager.GetGroup(GroupLabels.groupPlayers);
             tiles = manager.GetGroup(GroupLabels.groupMap);
