@@ -97,7 +97,7 @@ namespace Monster.ECS
         }
     }
 
-    public class Manager
+    public class Manager 
     {
         private List<Entity> entities = new List<Entity>();
         private Dictionary<GroupLabels, List<Entity>> groupedEntities = new Dictionary<GroupLabels, List<Entity>>();
